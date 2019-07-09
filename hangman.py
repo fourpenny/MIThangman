@@ -127,35 +127,75 @@ def hangman(secret_word):
     
     Follows the other limitations detailed in the problem write-up.
     '''
-    def info(lives):
-        '''
-        lives: the number of lives the user has left
-        Shows the user what letters they can guess and how many lives they have 
-        left.
-        '''
-        print("You have " + str(lives) + " lives left.")
-        print("You can still guess these letters: " + str(get_available_letters(letters_guessed)))
-        print("----------")
-    return
-
-    def guess(letter):
-        if isinstance(letter, str):
-            return "You guessed " + letter + "."
-        else:
-            return "That's not a letter, try again!"
-        
+    win = False
+    global current_guess
+    global lives
+    current_guess = ""
+    
+    
     print("This is Hangman!")
     print("I am thinking of a word that is " + str(len(secret_word)) + " letters long.")
     print("----------")
     while lives > 0 and not win:    
         info(lives)
-        print(guess(input("What letter do you want to guess?")))
-    
-    pass
+        guess(input("What letter do you want to guess?"))
+        print("----------")
+        win = is_word_guessed(secret_word, letters_guessed)
+    if  lives <= 0:
+        print("Oh no! That was your last life!")
+        print("You lose :(")
+        print("Would you like to play again?")
+        return
+    if win:
+        print("Congratulations! You win! Would you like to play again?")
+        return
+     
+def info(lives):
+    '''
+    lives: the number of lives the user has left
+    Shows the user what letters they can guess and how many lives they have 
+    left.
+    '''
+    print("You have " + str(lives) + " lives left.")
+    print("You can still guess these letters: " + str(get_available_letters(letters_guessed)))
+    print("----------")
+    print("This is the word so far:")
+    print(get_guessed_word(secret_word, letters_guessed))
+    print("----------")
+    return
+
+
+def guess(letter):
+    if isinstance(letter, str) and letter not in letters_guessed:
+        letters_guessed.append(letter.lower())
+        current_guess = letter.lower()
+        print("You guessed " + letter.lower() + ".")
+        print(correct_guess(current_guess))
+        return
+    elif letter in letters_guessed:
+        print("You've already guessed that letter, try again!")
+        return
+    else:
+        print("That's not a letter, try again!")
+        return
+        
+def correct_guess(letter):
+    global lives
+    if letter in secret_word:
+        return "Nice job! The letter " + letter + " is in the secret word."
+    else:
+        lives -= 1
+        return "Sorry, " + letter + " is not in the secret word."
+
 
 lives = 6
 letters_guessed = []
-hangman("hippo")
+secret_word = "hippo"
+hangman(secret_word)
+
+
+
+    
 
 # When you've completed your hangman function, scroll down to the bottom
 # of the file and uncomment the first two lines to test
