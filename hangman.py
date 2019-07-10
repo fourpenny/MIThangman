@@ -143,11 +143,14 @@ def hangman(secret_word):
         win = is_word_guessed(secret_word, letters_guessed)
     if  lives <= 0:
         print("Oh no! That was your last life!")
-        print("You lose :(")
-        print("Would you like to play again?")
+        print("Your guess was " + get_guessed_word(secret_word, letters_guessed) + " .")
+        print("The secret word was " + secret_word + ".")
+        print("You lose! :(")
+        play_again(input("Would you like to play again? Type y/n"))
         return
     if win:
-        print("Congratulations! You win! Would you like to play again?")
+        print("Congratulations! You win!")
+        play_again(input("Would you like to play again? Type y/n"))
         return
      
 def info(lives):
@@ -187,10 +190,28 @@ def correct_guess(letter):
         lives -= 1
         return "Sorry, " + letter + " is not in the secret word."
 
+def play_again(answer):
+    global lives
+    global letters_guessed
+    global secret_word
+    if str(answer.lower) == "y":
+        lives = 6
+        letters_guessed.clear()
+        secret_word = choose_word(wordlist)
+        hangman(secret_word)
+        return
+    elif str(answer.lower) == "n":
+        print("Okay, thanks for playing!")
+        return
+    else:
+        print("Sorry, I didn't understand that answer. Do you want to play again? y/n")
+        print(answer)
+        play_again(input())
+        return
 
 lives = 6
 letters_guessed = []
-secret_word = "hippo"
+secret_word = choose_word(wordlist)
 hangman(secret_word)
 
 
